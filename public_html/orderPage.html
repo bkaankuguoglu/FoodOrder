@@ -1,0 +1,19 @@
+<h3>{{orderID + " " + date + " Status:" + status}}</h3>
+
+<h4 ng-show="$storage.user.type == 2">From {{rest_name}} by {{rest_ow}}</h4>
+<h4 ng-show="$storage.user.type == 1">Ordered by {{user}}</h4>
+
+<div class="panel panel-default clickable" ng-repeat="(key,value) in promotions">
+  <div class="panel-heading">
+    <h3 class="panel-title">Promotion <span class="pull-right">{{promotion_costs[key]}}TL</span></h3>
+  </div>
+  <div class="panel-body">
+    <div ng-repeat="item in value">{{"Name: "+ item.name + " Type: " + item.type}}</div>
+  </div>
+</div>
+
+<div class="panel panel-default clickable" ng-repeat="item in menu_items track by item.ID">
+  <div class="panel-body">
+    {{"Name: "+ item.name + " Type: " + item.type}} <span class="pull-right">{{item.price}}TL</span>
+  </div>
+</div>

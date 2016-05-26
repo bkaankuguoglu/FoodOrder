@@ -1,0 +1,37 @@
+
+<h4>Edit Restaurant <button ng-disabled="closeRestSub" ng-click="closeRest();" type="button" class="btn btn-default pull-right">
+  Close Restaurant
+</button> <small class="pull-right">{{RestCloseError}}</small> </h4>
+
+<div ng-show="loading">
+  TODO loading animation.
+</div>
+
+<div ng-hide="loading">
+
+
+
+  <hr>
+
+  Regions: <span ng-repeat="region in regions track by region.name">{{region.name + " " + region.avg_minutes +"(min)"}}{{ $last ? "" : "," }}</span>
+
+  <br>
+  <br>
+
+  <div class="form-group">
+    {{RegionErrorMessage}}
+    <label for="typeselect">Add Region</label>
+    <br>
+    <select style="width:49%;" class="form-control pull-left" ng-options="item for item in districts" ng-model="district" ng-disabled="submitting"></select>
+    <input style="width:49%;" placeholder="Average Time in Minutes" class="form-control pull-right" type="number" ng-disabled="submitting" ng-model="district_time">
+    <br>
+    <button type="button" class="btn btn-default btn-block" ng-click="addRegion(district,district_time);" ng-disabled="submitting || isAvgValid()">
+      Add
+    </button>
+  </div>
+  <br>
+
+  <hr>
+
+
+</div>

@@ -1,0 +1,80 @@
+<h3>
+  {{name}}
+  <div class="pull-right" style="font-weight:normal;">
+    <small>({{owner}})</small>
+    <button ng-click="editRest();" ng-show="$storage.user.type == 1 && owner == $storage.user.username" type="button" class="btn btn-default btn-sm">Edit</button>
+  </div>
+</h3>
+
+<div ng-if="$storage.user.type == 1">
+  <!-- TODO owner related stuff -->
+</div>
+
+<div ng-if="$storage.user.type == 2">
+  <!-- TODO "Add/remove a restaurant to favorites" -->
+</div>
+
+<!--
+(menu items)
+  TODO show working hours -->
+
+<div ng-show="loading < 0">
+  TODO loading animation.
+</div>
+
+
+<div ng-hide="loading < 0">
+
+  <div class="container-fluid" ng-if="$storage.user.type == 1 && owner == $storage.user.username">
+    <hr>
+    <div class="row">
+
+      <h4 ng-show="orders && orders.length > 0">Pending orders of the restaurant.</h4>
+      <h5 ng-show="orders && orders.length == 0">Restaurant has no pending orders.</h5>
+
+      <div class="panel panel-default clickable" ng-repeat="order in orders track by order.ID" ng-click="openOrder(order.ID)" ng-hide="order.status == 1">
+        <div class="panel-heading">
+          <h3 class="panel-title">From:{{order["user"]}} At:{{order["date"]}} <button ng-click="finishOrder(order);" type="button" class="btn btn-default btn-sm pull-right">
+            Finish Order
+          </button></h3>
+        </div>
+        <div class="panel-body">
+          <div ng-if="order.ErrorMessage">
+            {{order.ErrorMessage}}
+          </div>
+          {{ "Restaurant " + order.rest_name + " status:" + order.status}}
+        </div>
+      </div>
+
+    </div>
+    <hr>
+  </div>
+
+  <div ng-hide="(promotions && promotions.length>0) || (menu_items && menu_items.length>0)">
+    Restaurant has no items in its menu.
+  </div>
+
+  <h4 ng-show="topItems && topItems.length>0">Top {{topItems.length}} Menu Items:</h4>
+  <div class="panel panel-default clickable" ng-repeat="item in topItems track by item.ID" ng-click="addItemToCart(item.ID)">
+    <div class="panel-body">
+      {{"Name: "+ item.name + " Type: " + item.type}} <span class="pull-right">{{item.price}}TL</span>
+    </div>
+  </div>
+  <hr>
+
+  <div class="panel panel-default clickable" ng-repeat="(key,value) in promotions" ng-click="addPromotionToCart(key)">
+    <div class="panel-heading">
+      <h3 class="panel-title">Promotion <span class="pull-right">{{promotion_costs[key]}}TL</span></h3>
+    </div>
+    <div class="panel-body">
+      <div ng-repeat="item in value">{{"Name: "+ item.name + " Type: " + item.type}}</div>
+    </div>
+  </div>
+
+  <div class="panel panel-default clickable" ng-repeat="item in menu_items track by item.ID" ng-click="addItemToCart(item.ID)">
+    <div class="panel-body">
+      {{"Name: "+ item.name + " Type: " + item.type}} <span class="pull-right">{{item.price}}TL</span>
+    </div>
+  </div>
+
+</div>

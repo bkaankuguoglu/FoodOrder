@@ -1,0 +1,77 @@
+
+<h4>Open New Restaurant</h4>
+
+<div ng-show="loading">
+  TODO loading animation.
+</div>
+
+<div ng-hide="loading">
+
+  {{ErrorMessage}}
+
+  <br>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+
+        {{namemessage}}
+
+        <div class="form-group">
+          <label for="regname">Name</label>
+          <input type="text" class="form-control" id="regname" ng-model="name" ng-disabled="submitting">
+        </div>
+
+        {{workinghourmessage}}
+
+        <div class="form-group">
+          <label for="regwhs">Work Hour Start</label>
+          <input type="time" class="form-control" id="regwhs" ng-model="work_hour_start" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="regwhe">Work Hour End</label>
+          <input type="time" class="form-control" id="regwhe" ng-model="work_hour_end" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="typeselect">Payment Type</label>
+          <select class="form-control" ng-options="payment.text for payment in payments" ng-model="payment" ng-disabled="submitting"></select>
+        </div>
+
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+
+        <div class="form-group">
+          <label for="regdoor">Door</label>
+          <input type="text" class="form-control" id="regdoor" ng-model="door" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="regstreet">Street</label>
+          <input type="text" class="form-control" id="regstreet" ng-model="street" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="regcity">City</label>
+          <input type="text" class="form-control" id="regcity" ng-model="city" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="typeselect">District</label>
+          <select class="form-control" ng-options="item for item in districts" ng-model="district" ng-disabled="submitting"></select>
+        </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-lg-12 col-sm-12">
+        <br>
+        <div class="form-group">
+          <button ng-click="submit();" class="btn btn-default btn-block" ng-disabled="submitting || !areValuesValid()">Open Restaurant</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

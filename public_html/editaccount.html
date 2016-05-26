@@ -1,0 +1,69 @@
+
+<h4>Edit Account Information</h4>
+
+<div ng-show="loading < 0">
+  TODO loading animation.
+</div>
+
+<div ng-hide="loading < 0">
+
+  {{ErrorMessage}}
+
+  <br>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-12" style="border-right: 1px solid #ccc;">
+
+        <div class="form-group">
+          <label for="regname">Name</label>
+          <input type="text" class="form-control" id="regname" ng-model="name" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="regname">Surname</label>
+          <input type="text" class="form-control" id="regsurname" ng-model="surname" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="regphone">Phone</label>
+          <input type="number" class="form-control" id="regphone" ng-model="phone" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <button ng-click="submit(0);" class="btn btn-default btn-block" ng-disabled="submitting || !areValuesValid(0)">Edit User Info</button>
+        </div>
+
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+
+        <div class="form-group">
+          <label for="regdoor">Door</label>
+          <input type="text" class="form-control" id="regdoor" ng-model="door" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="regstreet">Street</label>
+          <input type="text" class="form-control" id="regstreet" ng-model="street" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="regcity">City</label>
+          <input type="text" class="form-control" id="regcity" ng-model="city" ng-disabled="submitting">
+        </div>
+
+        <div class="form-group">
+          <label for="typeselect">District</label>
+          <select class="form-control" ng-options="item for item in districts" ng-model="district" ng-disabled="submitting"></select>
+        </div>
+
+        <div class="form-group">
+          <button ng-click="submit(1);" class="btn btn-default btn-block" ng-disabled="submitting || !areValuesValid(1)">Edit User Address</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

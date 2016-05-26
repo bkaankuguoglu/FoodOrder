@@ -1,0 +1,36 @@
+<h3>Previous Orders</h3>
+
+<div class="panel panel-default" ng-repeat="order in orders track by order.ID">
+  <div class="panel-heading">
+    <h3 class="panel-title"> <span class="clickable" ng-click="openOrder(order.ID)"> {{order["datetext"]}} </span>
+      <button ng-show="order.can_review" type="button" class="btn btn-default pull-right" ng-click="review(order);">
+        Review
+      </button>
+      <button ng-show="order.has_rev" disabled type="button" class="btn btn-default pull-right">
+        Reviewed
+      </button>
+    </h3>
+  </div>
+  <div class="panel-body">
+    {{ "Restaurant " + order.rest_name + " by " + order.rest_ow + " status:" + order.status}}
+
+    <div ng-if="order.review_mode">
+      {{RegionErrorMessage}}
+
+      <div class="form-group">
+        <label for="textareacomment">Comment</label>
+        <textarea ng-model="order.comment" rows="3" cols="30" class="form-control" ng-disabled="order.submitting"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="textareacomment">Rank</label>
+        <input ng-model="order.rank" type="range" name="points" min="0" max="20" ng-disabled="order.submitting">
+      </div>
+
+      <button ng-click="submitReview(order);" ng-disabled="order.submitting" type="submit" class="btn btn-default">Add Review</button>
+
+    </div>
+
+
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<!-- Orders (owner) -->
+<div class="container-fluid" ng-controller="orderCtrl" ng-if="$storage.user.type == 1">
+  <div class="row">
+
+    <div class="panel panel-default clickable" ng-repeat="order in orders track by order.ID" ng-click="openOrder(order.ID)" ng-hide="order.status == 1">
+      <div class="panel-heading">
+        <h3 class="panel-title">From:{{order["user"]}} At:{{order["date"]}} <button ng-click="finishOrder(order);" type="button" class="btn btn-default btn-sm pull-right">
+          Finish Order
+        </button></h3>
+      </div>
+      <div class="panel-body">
+        <div ng-if="order.ErrorMessage">
+          {{order.ErrorMessage}}
+        </div>
+        {{ "Restaurant " + order.rest_name + " status:" + order.status}}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div ng-show="$storage.user.type == 2">
+  TODO: show something here.
+</div>

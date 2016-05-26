@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="main">
+<head>
+  <meta charset="utf-8">
+  <title ng-bind="$root.appTitle + ' | FFoodOrder'">Loading... | FoodOrder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="">
+  <link rel="shortcut icon" href="">
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css">
+
+  <style media="screen">
+  [ng-cloak] {
+    display: none;
+  }
+  #textareacomment {
+    resize: vertical;
+  }
+
+  #topinfo {
+    max-height: 500px;
+  }
+
+  .clickable {
+    cursor: pointer;
+  }
+
+  /* Changes to Bootstrap */
+
+  .panel-body {
+    padding: 10px 15px;
+  }
+
+  </style>
+
+</head>
+<body ng-controller="mainCtrl">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <h2 class="text-center clickable" ng-click="goHome();">FoodOrder</h2>
+        <hr>
+      </div>
+    </div>
+    <div class="row" ng-hide="loading" ng-cloak>
+
+      <div ng-hide="$storage.user.token" class="col-lg-3 col-md-4 col-sm-12" ng-controller="loginCtrl">
+
+        <h3 class="text-center">Login</h3>
+
+        {{ErrorMessage}}
+
+        <form method="GET" enctype="multipart/form-data">
+
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input ng-model="name" type="text" class="form-control" size="50">
+          </div>
+
+          <div class="form-group">
+            <label for="username">Password:</label>
+            <input ng-model="pass" type="password" class="form-control" placeholder="******" size="50">
+          </div>
+
+          <div class="form-group">
+            <button ng-disable="loadingLogin" ng-click="login(name,pass);" class="btn btn-default btn-block">Submit</button>
+          </div>
+
+        </form>
+
+        <hr>
+
+        <div class="form-group">
+          <button ng-disable="loadingLogin" ng-click="register();" class="btn btn-default btn-block">Register</button>
+        </div>
+
+
+      </div>
+
+      <div ng-show="$storage.user.token" class="col-lg-3 col-md-4 col-sm-12">
+
+        <div id="accountinfo">
+          <h3 class="text-center">{{ $storage.user.name + " " + $storage.user.surname }}</h3>
+
+          <a href="#/editaccount/" class="btn btn-default btn-block">Edit Account</a>
+
+          <a ng-show="$storage.user.type == 2" href="#/orders/" class="btn btn-default btn-block">Previous Orders</a>
+
+          <hr>
+
+          <div class="panel panel-default" ng-if="$storage.user.type == 2">
+            <div class="panel-heading">
+              Sepet <span ng-click="deleteSepet();" class="glyphicon glyphicon-remove pull-right clickable" aria-hidden="true"></span>
+            </div>
+            <div class="panel-body" ng-show="sepetloading">
+              TODO loading animation.
+            </div>
+            <div class="panel-body" ng-hide="sepetloading">
+              <!-- (ng-repeat for menu-item in sepet. On change push to server n reload. Have track by in ng-repeat) -->
+
+              <div ng-hide="(sepet.promotions && sepet.promotions.length>0) || (sepet.menu_items && sepet.menu_items.length>0)">
+                Sepet is empty.
+              </div>
+
+              <div class="panel panel-default" ng-repeat="(key,value) in sepet.promotions">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><input class="form-control input-sm" type="number" ng-change="updatePromoQuantity(key,sepet.promotion_quantities[key]);" ng-model="sepet.promotion_quantities[key]" style="width:40px; display:inline-block; padding: 5px 0px 5px 5px;">Promotion:{{sepet.promotion_costs[key]}}TL</h3>
+                </div>
+                <div class="panel-body">
+                  <div ng-repeat="item in value">{{"Name: "+ item.name + " Type: " + item.type}}</div>
+                </div>
+              </div>
+
+              <div ng-repeat="item in sepet.menu_items">
+                <input class="form-control input-sm" type="number" ng-model="item.quantity" ng-change="updateMIQuantity(item.ID,item.quantity);" style="width:40px; display:inline-block; padding: 5px 0px 5px 5px;"> {{"Name: "+ item.name + " Type: " + item.type}} <span class="pull-right">{{item.price}}TL</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div ng-if="$storage.user.type == 2">
+
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="futureOrder"> Place for a future date/time.
+              </label>
+            </div>
+
+            <div class="form-group" ng-show="futureOrder">
+              <label>Aditional Time</label>
+              <br>
+              <input placeholder="hours" style="width:49%; display:inline-block;" type="number" class="form-control" ng-model="$root.addOrderHour" ng-change="watchAddOrderTime()">
+              <input placeholder="minutes" style="width:49%; display:inline-block;" type="number" class="form-control" ng-model="$root.addOrderMin" ng-change="watchAddOrderTime()">
+            </div>
+
+            <div class="form-group">
+              <button ng-disable="sepetloading" ng-click="placeOrder();" class="btn btn-default btn-block">Place Order</button>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="$storage.user.type == 1">
+            <!-- TODO Select a restaurant + "Open a restaurant" (If only type 1) -->
+            <label for="typeselect">Restaurants</label>
+            <select class="form-control" ng-disabled="restsloading" ng-options="rest.name for rest in restaurants" ng-change="openRest(selectedrest)" ng-model="selectedrest"></select>
+          </div>
+
+        </div>
+
+        <hr>
+
+        <div ng-controller="loginCtrl">
+          <div class="form-group">
+            <button ng-disable="loadingLogin" ng-click="logout();" class="btn btn-default btn-block">Logout</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-lg-9 col-md-8 col-sm-12 search-box">
+
+        <div id="topinfo">
+
+          <!-- Search -->
+          <div class="container-fluid" ng-controller="searchCtrl" ng-if="$storage.user.type == 2">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <input ng-model="keywords" type="text" class="form-control" placeholder="Search" size="50" ng-change="search(keywords)" ng-keypress="$event.which == 13 && search(keywords)">
+                </div>
+              </div>
+            </div>
+
+            <div class="row" ng-show="results.menu_items || results.restaurants">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <h4 ng-show="results.menu_items">Menu Items</h4>
+
+                <div class="panel panel-default clickable" ng-repeat="(key, value) in results.menu_items" ng-click="openRest(value.rest_ow,value.rest_name)">
+                  <div class="panel-heading">{{ value.name }} <div class="pull-right">by {{value.rest_name}}</div></div>
+                  <div class="panel-body">{{ "Price:" + value.price + " Type:" + convertmitype(value.type) }}</div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <h4 ng-show="results.restaurants">Restaurants</h4>
+
+                <div class="panel panel-default clickable" ng-repeat="(key, value) in results.restaurants" ng-click="openRest(value.rest_ow,value.name)">
+                  <div class="panel-body"><strong>{{ value.name }}</strong></div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div ng-view>
+
+          <!-- TODO "View recent orders" for user
+          TODO ng-repeat "order" (directive)
+          (TODO "Give ranking/comment to a restaurant" popup)-->
+
+
+          <!-- Restaurant Edit Page (for owner)
+
+          TODO Create/edit the menu of a restaurant
+          TODO Set promotions
+
+          TODO Set the acceptable payment types
+          TODO working hours
+          TODO Close a restaurant they own
+
+        -->
+
+        <!-- Settings Page
+        TODO Edit account information
+      -->
+    </div>
+
+
+
+  </div>
+
+</div>
+
+<div class="row" ng-show="loading">
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <div class="text-center">
+      TODO loading logo
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js" charset="utf-8" ></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js" charset="utf-8" ></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js" charset="utf-8" > </script>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js" charset="utf-8" > </script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-touch.js" charset="utf-8" > </script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.2/ui-bootstrap-tpls.min.js" charset="utf-8" > </script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js" charset="utf-8" > </script>
+
+<script src="./main.js" charset="utf-8"></script>
+
+
+</body>
+</html>
